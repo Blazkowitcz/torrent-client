@@ -62,7 +62,7 @@
                   <td>{{ torrent.status }}</td>
                   <td>
                     <v-progress-linear
-                      color="success"
+                      :color="torrent.status_color"
                       height="20"
                       :value="torrent.progress"
                     >
@@ -118,6 +118,7 @@ export default {
             value.upload_speed = val.upload_speed;
             value.progress = val.progress;
             value.status = val.status;
+            value.status_color = val.status_color;
             value.uploaded = val.uploaded;
             value.downloaded = val.downloaded;
           }
