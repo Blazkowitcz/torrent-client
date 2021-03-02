@@ -23,11 +23,7 @@
               <v-card>
                 <v-toolbar color="primary" dark>Download torrents</v-toolbar>
                 <v-card-text>
-                  <v-file-input
-                    counter
-                    multiple
-                    truncate-length="13"
-                  ></v-file-input>
+                  <vue-dropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions" @vdropzone-complete="getTorrents"></vue-dropzone>
                 </v-card-text>
                 <v-card-actions class="justify-end">
                   <v-btn text @click="dialog.value = false">Close</v-btn>
@@ -87,11 +83,23 @@
 </template>
 
 <script>
+import vue2Dropzone from 'vue2-dropzone'
+import 'vue2-dropzone/dist/vue2Dropzone.min.css'
+
 export default {
+  components: {
+    vueDropzone: vue2Dropzone
+  },
   data() {
     return {
       torrents: [],
       loop: null,
+      dropzoneOptions: {
+          url: 'http://127.0.0.1:3000/add-torrent',
+          thumbnailWidth: 150,
+          maxFilesize: 0.5,
+          headers: { "My-Awesome-Header": "header value" }
+      }
     };
   },
   methods: {
@@ -124,6 +132,9 @@ export default {
           }
         });
       });
+    },
+    uploadTorrent: function () {
+
     },
     rightClicked() {
       alert("right clicked")
