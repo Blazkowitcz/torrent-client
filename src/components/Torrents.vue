@@ -98,10 +98,16 @@
       <v-footer>
         <v-col md="12">
           <div>
-            <v-btn color="info" @click="changePan('pan_general')">General</v-btn>
-            <v-btn color="info" @click="changePan('pan_content')">Content</v-btn>
+            <v-btn color="info" @click="changePan('pan_general')"
+              >General</v-btn
+            >
+            <v-btn color="info" @click="changePan('pan_content')"
+              >Content</v-btn
+            >
             <v-btn color="info" @click="changePan('pan_pairs')">Pairs</v-btn>
-            <v-btn color="info" @click="changePan('pan_options')">Options</v-btn>
+            <v-btn color="info" @click="changePan('pan_options')"
+              >Options</v-btn
+            >
           </div>
           <v-card
             elevation="2"
@@ -204,6 +210,21 @@
                 </template>
               </v-simple-table>
             </div>
+            <div v-if="this.pans.pan_options">
+              <v-row>
+                <v-col md="1">
+                  <p class="vertical-center">Move Torrent : </p>
+                </v-col>
+                <v-col md="10">
+                  <v-text-field
+                    hide-details="auto" v-model="new_path"
+                  ></v-text-field>
+                </v-col>
+                <v-col md="1">
+                  <v-btn color="info" class="vertical-center" @click="moveTorrent">Move</v-btn>
+                </v-col>
+              </v-row>
+            </div>
           </v-card>
         </v-col>
       </v-footer>
@@ -223,6 +244,7 @@ export default {
     return {
       windowHeight: window.innerHeight,
       torrents: [],
+      new_path: "",
       pans: {
         pan_general: true,
         pan_content: false,
@@ -277,6 +299,9 @@ export default {
         });
       });
     },
+    moveTorrent: function () {
+      fetch("http://127.0.0.1:3000/torrent-move", { mode: "cors", method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ hash:  this.torrent_selected.infoHash, path:  this.new_path })})
+    },
     changePan: function (pan) {
       for (const [key] of Object.entries(this.pans)) {
         this.pans[key] = false;
@@ -286,7 +311,7 @@ export default {
     },
     uploadTorrent: function () {},
     rightClicked() {
-      alert("right clicked");
+      alert(this.new_path);
     },
   },
   mounted() {
@@ -298,6 +323,9 @@ export default {
 };
 </script>
 <style>
+.vertical-center {
+  margin-top: 20px;
+}
 .card-outter {
   position: relative;
   padding-bottom: 50px;
