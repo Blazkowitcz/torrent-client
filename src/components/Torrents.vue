@@ -286,6 +286,7 @@
 <script>
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
+import config from "../../conf.json";
 
 export default {
   components: {
@@ -293,6 +294,7 @@ export default {
   },
   data() {
     return {
+      back_url: config.address + ":" + config.port,
       windowHeight: window.innerHeight,
       torrents: [],
       new_path: "",
@@ -305,7 +307,7 @@ export default {
       torrent_selected: null,
       loop: null,
       dropzoneOptions: {
-        url: "http://127.0.0.1:3000/add-torrent",
+        url: config.address + ":" + config.port +"/add-torrent",
         thumbnailWidth: 150,
         maxFilesize: 1,
         headers: { "My-Awesome-Header": "header value" },
@@ -314,7 +316,7 @@ export default {
   },
   methods: {
     getTorrents: function () {
-      fetch("http://127.0.0.1:3000/torrents", { mode: "cors" })
+      fetch(config.address + ":" + config.port + "/torrents", { mode: "cors" })
         .then((response) => response.json())
         .then((data) => {
           this.torrents = data;
@@ -322,14 +324,14 @@ export default {
         });
     },
     getShortData: function () {
-      fetch("http://127.0.0.1:3000/torrents-short", { mode: "cors" })
+      fetch(config.address + ":" + config.port + "/torrents-short", { mode: "cors" })
         .then((response) => response.json())
         .then((data) => {
           this.updateData(data);
         });
     },
     getTorrentDetail: function (hash) {
-      fetch("http://127.0.0.1:3000/torrents/" + hash, { mode: "cors" })
+      fetch(config.address + ":" + config.port + "/torrents/" + hash, { mode: "cors" })
         .then((response) => response.json())
         .then((data) => {
           this.torrent_selected = data;
@@ -351,7 +353,7 @@ export default {
       });
     },
     moveTorrent: function () {
-      fetch("http://127.0.0.1:3000/torrent-move", {
+      fetch(config.address + ":" + config.port + "/torrent-move", {
         mode: "cors",
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -362,7 +364,7 @@ export default {
       });
     },
     changeTorrentLocation: function () {
-      fetch("http://127.0.0.1:3000/torrent-change-location", {
+      fetch(config.address + ":" + config.port + "/torrent-change-location", {
         mode: "cors",
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -380,7 +382,7 @@ export default {
       this.pans[pan] = true;
     },
     pauseTorrent: function () {
-      fetch("http://127.0.0.1:3000/pause-torrent", {
+      fetch(config.address + ":" + config.port + "/pause-torrent", {
         mode: "cors",
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -391,7 +393,7 @@ export default {
       .then(this.torrent_selected.paused = true);
     },
     resumeTorrent: function () {
-      fetch("http://127.0.0.1:3000/resume-torrent", {
+      fetch(config.address + ":" + config.port + "/resume-torrent", {
         mode: "cors",
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -402,7 +404,7 @@ export default {
       .then(this.torrent_selected.paused = false);
     },
     rescanTorrent: function () {
-      fetch("http://127.0.0.1:3000/torrent-rescan", {
+      fetch(config.address + ":" + config.port + "/torrent-rescan", {
         mode: "cors",
         method: "POST",
         headers: { "Content-Type": "application/json" },
