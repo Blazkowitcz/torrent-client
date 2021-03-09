@@ -213,17 +213,68 @@
             <div v-if="this.pans.pan_options">
               <v-row>
                 <v-col md="1">
-                  <p class="vertical-center">Move Torrent : </p>
+                  <p class="vertical-center">Move Torrent :</p>
                 </v-col>
-                <v-col md="10">
+                <v-col md="9">
                   <v-text-field
-                    hide-details="auto" v-model="new_path"
+                    hide-details="auto"
+                    v-model="new_path"
                   ></v-text-field>
                 </v-col>
-                <v-col md="1">
-                  <v-btn color="info" class="vertical-center" @click="moveTorrent">Move</v-btn>
+                <v-col md="2">
+                  <v-btn
+                    color="info"
+                    class="vertical-center"
+                    @click="moveTorrent"
+                    >Move</v-btn
+                  >
+                  <v-btn
+                    color="info"
+                    class="vertical-center"
+                    @click="changeTorrentLocation"
+                    >Change Location</v-btn
+                  >
                 </v-col>
               </v-row>
+              <v-row>
+                <v-col md="10" offset="1">
+                  <v-divider></v-divider>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-layout justify-center>
+                  <v-btn
+                      color="warning"
+                      @click="pauseTorrent"
+                      v-if="torrent_selected.paused === false"
+                      >Pause</v-btn
+                    >
+                    <v-btn
+                      color="success"
+                      @click="resumeTorrent"
+                      v-if="torrent_selected.paused === true"
+                      >Resume</v-btn
+                    >
+                    <v-btn color="info" @click="rescanTorrent">Recheck</v-btn>
+                    <v-btn color="error">Delete</v-btn>
+                </v-layout>
+              </v-row>
+            </div>
+            <div v-if="this.pans.pan_content">
+              <v-flex md12 style="overflow: auto">
+                <v-list-item-group>
+                  <v-list
+                    :max-height="windowHeight / 3"
+                    v-if="this.torrent_selected !== null"
+                  >
+                    <v-list-item
+                      v-for="file in torrent_selected.files"
+                      :key="file.name"
+                      >{{ file.name }}</v-list-item
+                    >
+                  </v-list>
+                </v-list-item-group>
+              </v-flex>
             </div>
           </v-card>
         </v-col>
@@ -300,7 +351,26 @@ export default {
       });
     },
     moveTorrent: function () {
-      fetch("http://127.0.0.1:3000/torrent-move", { mode: "cors", method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ hash:  this.torrent_selected.infoHash, path:  this.new_path })})
+      fetch("http://127.0.0.1:3000/torrent-move", {
+        mode: "cors",
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          hash: this.torrent_selected.infoHash,
+          path: this.new_path,
+        }),
+      });
+    },
+    changeTorrentLocation: function () {
+      fetch("http://127.0.0.1:3000/torrent-change-location", {
+        mode: "cors",
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          hash: this.torrent_selected.infoHash,
+          path: this.new_path,
+        }),
+      });
     },
     changePan: function (pan) {
       for (const [key] of Object.entries(this.pans)) {
@@ -309,9 +379,37 @@ export default {
       }
       this.pans[pan] = true;
     },
-    uploadTorrent: function () {},
-    rightClicked() {
-      alert(this.new_path);
+    pauseTorrent: function () {
+      fetch("http://127.0.0.1:3000/pause-torrent", {
+        mode: "cors",
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          hash: this.torrent_selected.infoHash
+        }),
+      })
+      .then(this.torrent_selected.paused = true);
+    },
+    resumeTorrent: function () {
+      fetch("http://127.0.0.1:3000/resume-torrent", {
+        mode: "cors",
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          hash: this.torrent_selected.infoHash
+        }),
+      })
+      .then(this.torrent_selected.paused = false);
+    },
+    rescanTorrent: function () {
+      fetch("http://127.0.0.1:3000/torrent-rescan", {
+        mode: "cors",
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          hash: this.torrent_selected.infoHash
+        }),
+      });
     },
   },
   mounted() {
