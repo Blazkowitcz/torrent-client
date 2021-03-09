@@ -236,15 +236,44 @@
                   >
                 </v-col>
               </v-row>
+              <v-row>
+                <v-col md="10" offset="1">
+                  <v-divider></v-divider>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-layout justify-center>
+                  <v-btn
+                      color="warning"
+                      @click="pauseTorrent"
+                      v-if="torrent_selected.paused === false"
+                      >Pause</v-btn
+                    >
+                    <v-btn
+                      color="success"
+                      @click="resumeTorrent"
+                      v-if="torrent_selected.paused === true"
+                      >Resume</v-btn
+                    >
+                    <v-btn color="info">Recheck</v-btn>
+                    <v-btn color="error">Delete</v-btn>
+                </v-layout>
+              </v-row>
             </div>
             <div v-if="this.pans.pan_content">
               <v-flex md12 style="overflow: auto">
                 <v-list-item-group>
-                <v-list :max-height="windowHeight / 3" v-if="this.torrent_selected !== null">
-                  <v-list-item v-for="file in torrent_selected.files" :key="file.name">{{ file.name }}</v-list-item>
-
-                </v-list>
-              </v-list-item-group>
+                  <v-list
+                    :max-height="windowHeight / 3"
+                    v-if="this.torrent_selected !== null"
+                  >
+                    <v-list-item
+                      v-for="file in torrent_selected.files"
+                      :key="file.name"
+                      >{{ file.name }}</v-list-item
+                    >
+                  </v-list>
+                </v-list-item-group>
               </v-flex>
             </div>
           </v-card>
