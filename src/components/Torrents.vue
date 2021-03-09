@@ -379,9 +379,30 @@ export default {
       }
       this.pans[pan] = true;
     },
-    uploadTorrent: function () {},
-    rightClicked() {
-      alert(this.new_path);
+    pauseTorrent: function () {
+      fetch("http://127.0.0.1:3000/pause-torrent", {
+        mode: "cors",
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          hash: this.torrent_selected.infoHash
+        }),
+      })
+      .then(this.torrent_selected.paused = true);
+    },
+    resumeTorrent: function () {
+      fetch("http://127.0.0.1:3000/resume-torrent", {
+        mode: "cors",
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          hash: this.torrent_selected.infoHash
+        }),
+      })
+      .then(this.torrent_selected.paused = false);
+    },
+    rescanTorrent: function () {
+
     },
   },
   mounted() {
