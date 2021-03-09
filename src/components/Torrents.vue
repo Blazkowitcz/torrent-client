@@ -255,7 +255,7 @@
                       v-if="torrent_selected.paused === true"
                       >Resume</v-btn
                     >
-                    <v-btn color="info">Recheck</v-btn>
+                    <v-btn color="info" @click="rescanTorrent">Recheck</v-btn>
                     <v-btn color="error">Delete</v-btn>
                 </v-layout>
               </v-row>
@@ -402,7 +402,14 @@ export default {
       .then(this.torrent_selected.paused = false);
     },
     rescanTorrent: function () {
-
+      fetch("http://127.0.0.1:3000/torrent-rescan", {
+        mode: "cors",
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          hash: this.torrent_selected.infoHash
+        }),
+      });
     },
   },
   mounted() {
